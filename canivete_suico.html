@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canivete Suíço Digital</title>
+    <style>
+        :root {
+            --primary: #00ff9d;
+            --secondary: #00b8ff;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --light: #f0f0f0;
+            --glow: 0 0 10px rgba(0, 255, 157, 0.7);
+            --glow-secondary: 0 0 10px rgba(0, 184, 255, 0.7);
+            --danger: #ff3860;
+            --warning: #ffdd57;
+            --success: #48c774;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 157, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 184, 255, 0.05) 0%, transparent 20%),
+                linear-gradient(to bottom, var(--darker), var(--dark));
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 15px;
+            background-color: rgba(10, 10, 10, 0.8);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(0, 255, 157, 0.03) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            animation: scan 15s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%) rotate(30deg); }
+            100% { transform: translateY(100%) rotate(30deg); }
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-shadow: var(--glow);
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            margin: 0.5rem auto;
+            box-shadow: var(--glow);
+        }
+        
+        .tool-card {
+            background-color: rgba(20, 20, 20, 0.7);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border-color: rgba(0, 255, 157, 0.3);
+        }
+        
+        .tool-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .tool-icon {
+            margin-right: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            background-color: rgba(30, 30, 30, 0.8);
+            color: var(--light);
+            font-size: 1rem;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--darker);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow-secondary);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background: rgba(30, 30, 30, 0.8);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+        }
+        
+        button.danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--primary);
+            word-break: break-all;
+        }
+        
+        .result-title {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timer-display {
+            font-size: 5rem;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .timer-message {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-top: 1rem;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .timer-message.show {
+            opacity: 1;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            background: rgba(30, 30, 30, 0.8);
+            color: var(--light);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px 5px 0 0;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 0.3rem;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-button.active {
+            background: rgba(0, 255, 157, 0.1);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .tab-button:hover:not(.active) {
+            background: rgba(0, 184, 255, 0.1);
+            color: var(--secondary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .password-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .option-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-group label {
+            margin-bottom: 0;
+            margin-left: 0.5rem;
+            color: var(--light);
+            font-weight: normal;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .timer-display {
+                font-size: 3rem;
+            }
+            
+            .tab-buttons {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CANIVETE SUIÇO DIGITAL</h1>
+        
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="gerador-senha">🔐 Gerador de Senha</button>
+            <button class="tab-button" data-tab="contador-palavras">🧠 Contador de Palavras</button>
+            <button class="tab-button" data-tab="calculadora">🧮 Calculadora</button>
+            <button class="tab-button" data-tab="data-hora">📆 Data e Hora</button>
+            <button class="tab-button" data-tab="temporizador">⏱ Temporizador</button>
+            <button class="tab-button" data-tab="rolar-dado">🎲 Rolar Dado</button>
+        </div>
+        
+        <!-- Gerador de Senha -->
+        <div id="gerador-senha" class="tab-content active">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🔐</span>
+                    <span>GERADOR DE SENHA SEGURA</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password-length">TAMANHO DA SENHA</label>
+                    <input type="number" id="password-length" min="4" max="64" value="12">
+                </div>
+                
+                <div class="password-options">
+                    <div class="option-group">
+                        <input type="checkbox" id="uppercase" checked>
+                        <label for="uppercase">Letras maiúsculas (A-Z)</label>
+                    </div>
+                    <div class="option-group">
+                        <input type="checkbox" id="lowercase" checked>
+                        <label for="lowercase">Letras minúsculas (a-z)</label>
+                    </div>
+                    <div class="option-group">
+                        <input type="checkbox" id="numbers" checked>
+                        <label for="numbers">Números (0-9)</label>
+                    </div>
+                    <div class="option-group">
+                        <input type="checkbox" id="symbols" checked>
+                        <label for="symbols">Símbolos (!@#$% etc.)</label>
+                    </div>
+                </div>
+                
+                <button id="generate-password">GERAR SENHA</button>
+                <button id="copy-password" class="secondary" disabled>COPIAR SENHA</button>
+                
+                <div class="result" id="password-result" style="display: none;">
+                    <div class="result-title">SENHA GERADA:</div>
+                    <div id="password-output"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contador de Palavras -->
+        <div id="contador-palavras" class="tab-content">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🧠</span>
+                    <span>CONTADOR DE PALAVRAS</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="text-to-analyze">TEXTO PARA ANÁLISE</label>
+                    <textarea id="text-to-analyze" placeholder="Digite ou cole seu texto aqui..."></textarea>
+                </div>
+                
+                <button id="analyze-text">ANALISAR TEXTO</button>
+                
+                <div class="result" id="text-analysis-result" style="display: none;">
+                    <div class="result-title">RESULTADO DA ANÁLISE:</div>
+                    <div id="word-count">Palavras: 0</div>
+                    <div id="character-count">Caracteres: 0</div>
+                    <div id="line-count">Linhas: 0</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Calculadora -->
+        <div id="calculadora" class="tab-content">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🧮</span>
+                    <span>CALCULADORA</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="math-expression">EXPRESSÃO MATEMÁTICA</label>
+                    <input type="text" id="math-expression" placeholder="Exemplo: 2+5*3 ou sqrt(9)">
+                </div>
+                
+                <button id="calculate-expression">CALCULAR</button>
+                <button id="clear-calculator" class="secondary">LIMPAR</button>
+                
+                <div class="result" id="calculation-result" style="display: none;">
+                    <div class="result-title">RESULTADO:</div>
+                    <div id="calculation-output"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data e Hora -->
+        <div id="data-hora" class="tab-content">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">📆</span>
+                    <span>DATA E HORA ATUAL</span>
+                </div>
+                
+                <div class="result">
+                    <div class="result-title">INFORMAÇÕES ATUAIS:</div>
+                    <div id="current-date">Data: --/--/----</div>
+                    <div id="current-time">Hora: --:--:--</div>
+                    <div id="day-of-week">Dia da semana: --------</div>
+                    <div id="timezone">Fuso horário: ----------</div>
+                </div>
+                
+                <button id="refresh-time">ATUALIZAR</button>
+            </div>
+        </div>
+        
+        <!-- Temporizador -->
+        <div id="temporizador" class="tab-content">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">⏱</span>
+                    <span>TEMPORIZADOR</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="seconds">TEMPO EM SEGUNDOS</label>
+                    <input type="number" id="seconds" min="1" value="10" placeholder="Digite o tempo em segundos">
+                </div>
+                
+                <button id="start-timer">INICIAR TEMPORIZADOR</button>
+                
+                <div class="timer-display" id="timer">--</div>
+                
+                <div class="timer-message" id="timer-message">
+                    ⏰ TEMPO ESGOTADO!
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rolar Dado -->
+        <div id="rolar-dado" class="tab-content">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🎲</span>
+                    <span>ROLAR DADO</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="dice-sides">NÚMERO DE LADOS DO DADO</label>
+                    <input type="number" id="dice-sides" min="2" max="100" value="6">
+                </div>
+                
+                <button id="roll-dice">ROLAR DADO</button>
+                <button id="roll-multiple" class="secondary">ROLAR 3 VEZES</button>
+                
+                <div class="result" id="dice-result" style="display: none;">
+                    <div class="result-title">RESULTADO:</div>
+                    <div id="dice-output"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        © 2023 Canivete Suíço Digital | Versão Web
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab system
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Password Generator
+            const generatePasswordBtn = document.getElementById('generate-password');
+            const copyPasswordBtn = document.getElementById('copy-password');
+            const passwordOutput = document.getElementById('password-output');
+            const passwordResult = document.getElementById('password-result');
+            
+            generatePasswordBtn.addEventListener('click', function() {
+                const length = parseInt(document.getElementById('password-length').value);
+                const hasUpper = document.getElementById('uppercase').checked;
+                const hasLower = document.getElementById('lowercase').checked;
+                const hasNumbers = document.getElementById('numbers').checked;
+                const hasSymbols = document.getElementById('symbols').checked;
+                
+                if (length < 4 || length > 64) {
+                    alert('O tamanho da senha deve estar entre 4 e 64 caracteres');
+                    return;
+                }
+                
+                if (!hasUpper && !hasLower && !hasNumbers && !hasSymbols) {
+                    alert('Selecione pelo menos um tipo de caractere');
+                    return;
+                }
+                
+                let charset = '';
+                if (hasUpper) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                if (hasLower) charset += 'abcdefghijklmnopqrstuvwxyz';
+                if (hasNumbers) charset += '0123456789';
+                if (hasSymbols) charset += '!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
+                
+                let password = '';
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * charset.length);
+                    password += charset[randomIndex];
+                }
+                
+                passwordOutput.textContent = password;
+                passwordResult.style.display = 'block';
+                copyPasswordBtn.disabled = false;
+            });
+            
+            copyPasswordBtn.addEventListener('click', function() {
+                const password = passwordOutput.textContent;
+                navigator.clipboard.writeText(password).then(() => {
+                    copyPasswordBtn.textContent = 'COPIADO!';
+                    setTimeout(() => {
+                        copyPasswordBtn.textContent = 'COPIAR SENHA';
+                    }, 2000);
+                });
+            });
+            
+            // Word Counter
+            const analyzeTextBtn = document.getElementById('analyze-text');
+            const textToAnalyze = document.getElementById('text-to-analyze');
+            const textAnalysisResult = document.getElementById('text-analysis-result');
+            const wordCount = document.getElementById('word-count');
+            const characterCount = document.getElementById('character-count');
+            const lineCount = document.getElementById('line-count');
+            
+            analyzeTextBtn.addEventListener('click', function() {
+                const text = textToAnalyze.value.trim();
+                
+                if (!text) {
+                    alert('Digite algum texto para analisar');
+                    return;
+                }
+                
+                // Word count (split by whitespace and filter out empty strings)
+                const words = text.split(/\s+/).filter(word => word.length > 0);
+                // Character count (including spaces)
+                const characters = text.length;
+                // Line count
+                const lines = text.split('\n').length;
+                
+                wordCount.textContent = `Palavras: ${words.length}`;
+                characterCount.textContent = `Caracteres: ${characters}`;
+                lineCount.textContent = `Linhas: ${lines}`;
+                
+                textAnalysisResult.style.display = 'block';
+            });
+            
+            // Calculator
+            const calculateBtn = document.getElementById('calculate-expression');
+            const clearCalculatorBtn = document.getElementById('clear-calculator');
+            const mathExpression = document.getElementById('math-expression');
+            const calculationResult = document.getElementById('calculation-result');
+            const calculationOutput = document.getElementById('calculation-output');
+            
+            calculateBtn.addEventListener('click', function() {
+                const expression = mathExpression.value.trim();
+                
+                if (!expression) {
+                    alert('Digite uma expressão matemática');
+                    return;
+                }
+                
+                try {
+                    // Replace ^ with ** for exponentiation
+                    const sanitizedExpression = expression.replace(/\^/g, '**');
+                    // Use Function constructor for safer eval
+                    const result = new Function('return ' + sanitizedExpression)();
+                    
+                    calculationOutput.textContent = result;
+                    calculationResult.style.display = 'block';
+                } catch (e) {
+                    calculationOutput.textContent = `Erro: ${e.message}`;
+                    calculationResult.style.display = 'block';
+                }
+            });
+            
+            clearCalculatorBtn.addEventListener('click', function() {
+                mathExpression.value = '';
+                calculationResult.style.display = 'none';
+            });
+            
+            // Date and Time
+            const refreshTimeBtn = document.getElementById('refresh-time');
+            const currentDate = document.getElementById('current-date');
+            const currentTime = document.getElementById('current-time');
+            const dayOfWeek = document.getElementById('day-of-week');
+            const timezone = document.getElementById('timezone');
+            
+            function updateDateTime() {
+                const now = new Date();
+                
+                // Format date (DD/MM/YYYY)
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+                
+                // Format time (HH:MM:SS)
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                // Day of week
+                const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+                const dayName = days[now.getDay()];
+                
+                // Timezone
+                const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                
+                currentDate.textContent = `Data: ${day}/${month}/${year}`;
+                currentTime.textContent = `Hora: ${hours}:${minutes}:${seconds}`;
+                dayOfWeek.textContent = `Dia da semana: ${dayName}`;
+                timezone.textContent = `Fuso horário: ${tz}`;
+            }
+            
+            // Update immediately and then every second
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            refreshTimeBtn.addEventListener('click', updateDateTime);
+            
+            // Timer
+            const startButton = document.getElementById('start-timer');
+            const timerDisplay = document.getElementById('timer');
+            const secondsInput = document.getElementById('seconds');
+            const timerMessage = document.getElementById('timer-message');
+            
+            let timer;
+            let isRunning = false;
+            
+            startButton.addEventListener('click', function() {
+                if (isRunning) {
+                    clearInterval(timer);
+                    isRunning = false;
+                    startButton.textContent = 'INICIAR TEMPORIZADOR';
+                    timerDisplay.textContent = '--';
+                    timerMessage.classList.remove('show');
+                    return;
+                }
+                
+                const seconds = parseInt(secondsInput.value);
+                
+                if (isNaN(seconds) || seconds <= 0) {
+                    alert('Por favor, insira um número válido de segundos');
+                    return;
+                }
+                
+                isRunning = true;
+                startButton.textContent = 'PARAR TEMPORIZADOR';
+                timerMessage.classList.remove('show');
+                
+                let remaining = seconds;
+                timerDisplay.textContent = remaining;
+                
+                timer = setInterval(function() {
+                    remaining--;
+                    timerDisplay.textContent = remaining;
+                    
+                    // Blink effect when 5 seconds or less remain
+                    if (remaining <= 5) {
+                        timerDisplay.style.animation = 'none';
+                        setTimeout(() => {
+                            timerDisplay.style.animation = 'blink 1s infinite';
+                        }, 10);
+                    }
+                    
+                    if (remaining <= 0) {
+                        clearInterval(timer);
+                        isRunning = false;
+                        startButton.textContent = 'INICIAR TEMPORIZADOR';
+                        timerMessage.classList.add('show');
+                        timerDisplay.style.animation = 'none';
+                        
+                        // Play sound
+                        const audio = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...');
+                        audio.volume = 0.2;
+                        audio.play().catch(e => console.log('Audio play failed:', e));
+                    }
+                }, 1000);
+            });
+            
+            // Dice Roller
+            const rollDiceBtn = document.getElementById('roll-dice');
+            const rollMultipleBtn = document.getElementById('roll-multiple');
+            const diceOutput = document.getElementById('dice-output');
+            const diceResult = document.getElementById('dice-result');
+            
+            rollDiceBtn.addEventListener('click', function() {
+                const sides = parseInt(document.getElementById('dice-sides').value);
+                
+                if (isNaN(sides) || sides < 2) {
+                    alert('O dado deve ter pelo menos 2 lados');
+                    return;
+                }
+                
+                const result = Math.floor(Math.random() * sides) + 1;
+                diceOutput.textContent = `Você rolou um D${sides} e obteve: ${result}`;
+                diceResult.style.display = 'block';
+            });
+            
+            rollMultipleBtn.addEventListener('click', function() {
+                const sides = parseInt(document.getElementById('dice-sides').value);
+                
+                if (isNaN(sides) || sides < 2) {
+                    alert('O dado deve ter pelo menos 2 lados');
+                    return;
+                }
+                
+                let results = [];
+                for (let i = 0; i < 3; i++) {
+                    results.push(Math.floor(Math.random() * sides) + 1);
+                }
+                
+                diceOutput.textContent = `Você rolou um D${sides} três vezes e obteve: ${results.join(', ')}`;
+                diceResult.style.display = 'block';
+            });
+            
+            // Add blink animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes blink {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.5; color: var(--danger); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
